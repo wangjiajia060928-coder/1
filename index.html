@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>今天吃什么</title>
+    <meta name="description" content="按 Figma Frame 12 还原的今天吃什么 App 首页。" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="app-frame" aria-label="今天吃什么">
+        <h1 class="logo">EAT</h1>
+
+        <div class="food-row food-row-top" aria-hidden="true">
+          <div class="food-track">
+            <div class="food-tile">
+              <img class="food-img strawberry" src="./assets/figma-frame-12/strawberry.png" alt="" />
+            </div>
+            <div class="food-tile">
+              <img class="food-img pie" src="./assets/figma-frame-12/pie.png" alt="" />
+            </div>
+            <div class="food-tile">
+              <img class="food-img strawberry-big" src="./assets/figma-frame-12/strawberry.png" alt="" />
+            </div>
+            <div class="food-tile"></div>
+            <div class="food-tile">
+              <img class="food-img strawberry" src="./assets/figma-frame-12/strawberry.png" alt="" />
+            </div>
+            <div class="food-tile">
+              <img class="food-img pie" src="./assets/figma-frame-12/pie.png" alt="" />
+            </div>
+            <div class="food-tile">
+              <img class="food-img strawberry-big" src="./assets/figma-frame-12/strawberry.png" alt="" />
+            </div>
+            <div class="food-tile"></div>
+          </div>
+        </div>
+
+        <div class="food-row food-row-bottom" aria-hidden="true">
+          <div class="food-tile">
+            <img class="food-img cupcake" src="./assets/figma-frame-12/cupcake.png" alt="" />
+          </div>
+          <div class="food-tile">
+            <img class="food-img chick" src="./assets/figma-frame-12/chick.png" alt="" />
+          </div>
+          <div class="food-tile">
+            <img class="food-img blueberry" src="./assets/figma-frame-12/blueberry.png" alt="" />
+          </div>
+          <div class="food-tile"></div>
+        </div>
+
+        <section class="panel">
+          <div class="title-block">
+            <p>看你心情</p>
+            <p>今天想吃啥</p>
+            <img src="./assets/figma-frame-12/green-stroke.svg" alt="" />
+          </div>
+
+          <div class="choice-area" aria-label="选择吃饭心情">
+            <button class="choice-card" type="button">
+              <span>随便</span>
+              <span>吃点</span>
+            </button>
+            <button class="choice-card is-active" type="button">
+              <span>正在</span>
+              <span>纠结</span>
+            </button>
+            <button class="choice-card" type="button">
+              <span>整点</span>
+              <span>好的</span>
+            </button>
+          </div>
+
+          <button class="pick-button" id="pickButton" type="button">
+            <span class="chance-dot" id="chanceCount">9</span>
+            <span id="pickText">帮我选</span>
+          </button>
+        </section>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
