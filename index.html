@@ -1,85 +1,501 @@
 <!doctype html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>今天吃什么</title>
-    <meta name="description" content="按 Figma Frame 12 还原的今天吃什么 App 首页。" />
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body>
-    <main class="app-shell">
-      <section class="app-frame" aria-label="今天吃什么">
-        <h1 class="logo">EAT</h1>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Frame 14</title>
+  <link rel="preload" href="./result.svg" as="image">
+  <style>
+    * { box-sizing: border-box; }
 
-        <div class="food-row food-row-top" aria-hidden="true">
-          <div class="food-track">
-            <div class="food-tile">
-              <img class="food-img strawberry" src="./assets/figma-frame-12/strawberry.png" alt="" />
-            </div>
-            <div class="food-tile">
-              <img class="food-img pie" src="./assets/figma-frame-12/pie.png" alt="" />
-            </div>
-            <div class="food-tile">
-              <img class="food-img strawberry-big" src="./assets/figma-frame-12/strawberry.png" alt="" />
-            </div>
-            <div class="food-tile"></div>
-            <div class="food-tile">
-              <img class="food-img strawberry" src="./assets/figma-frame-12/strawberry.png" alt="" />
-            </div>
-            <div class="food-tile">
-              <img class="food-img pie" src="./assets/figma-frame-12/pie.png" alt="" />
-            </div>
-            <div class="food-tile">
-              <img class="food-img strawberry-big" src="./assets/figma-frame-12/strawberry.png" alt="" />
-            </div>
-            <div class="food-tile"></div>
-          </div>
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: #f5f5f7;
+    }
+
+    body {
+      display: grid;
+      place-items: start center;
+    }
+
+    .screen {
+      position: relative;
+      overflow: hidden;
+      display: block;
+      width: min(100vw, 375px);
+      height: auto;
+      aspect-ratio: 375 / 812;
+    }
+
+    .artwork {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .carousel {
+      position: absolute;
+      inset: 105px 0 auto;
+      height: 229px;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .row {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 102px;
+      overflow: hidden;
+    }
+
+    .row--top { top: 0; }
+    .row--bottom { top: 127px; }
+
+    .track {
+      display: flex;
+      width: max-content;
+      will-change: transform;
+    }
+
+    .row--top .track {
+      animation: slide-left 12s linear infinite;
+    }
+
+    .row--bottom .track {
+      transform: translateX(-378px);
+      animation: slide-right 12s linear infinite;
+    }
+
+    .slice {
+      position: relative;
+      flex: 0 0 378px;
+      width: 378px;
+      height: 102px;
+      overflow: hidden;
+      background: #f5f5f7;
+    }
+
+    .slice img {
+      position: absolute;
+      left: 0;
+      width: 378px;
+      height: 812px;
+      max-width: none;
+    }
+
+    .row--top .slice img { top: -105px; }
+    .row--bottom .slice img { top: -232px; }
+
+    @keyframes slide-left {
+      from { transform: translateX(0); }
+      to { transform: translateX(-378px); }
+    }
+
+    @keyframes slide-right {
+      from { transform: translateX(-378px); }
+      to { transform: translateX(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .track { animation-play-state: paused !important; }
+    }
+
+    .choices {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .choice-hit {
+      position: absolute;
+      top: 580px;
+      z-index: 3;
+      width: 108px;
+      height: 132px;
+      padding: 0;
+      border: 0;
+      border-radius: 18px;
+      background: transparent;
+      cursor: pointer;
+      pointer-events: auto;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .choice-hit:focus-visible {
+      outline: 3px solid #1677ff;
+      outline-offset: 2px;
+    }
+
+    .choice-hit--left { left: 22px; }
+    .choice-hit--center { left: 134px; }
+    .choice-hit--right { left: 246px; }
+
+    .right-selected {
+      position: absolute;
+      left: 244px;
+      top: 573px;
+      z-index: 2;
+      width: 113px;
+      height: 123px;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+    }
+
+    .right-selected img {
+      position: absolute;
+      left: -223px;
+      top: -25px;
+      width: 357px;
+      height: 159px;
+      max-width: none;
+    }
+
+    .selected-left,
+    .center-unselected {
+      position: absolute;
+      z-index: 2;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+    }
+
+    .selected-left {
+      left: 20px;
+      top: 573px;
+      width: 113px;
+      height: 123px;
+    }
+
+    .center-unselected {
+      left: 132px;
+      top: 576px;
+      display: grid;
+      place-content: center;
+      width: 112px;
+      height: 120px;
+      background: #fff;
+      color: #050505;
+      text-align: center;
+      font-family: system-ui, -apple-system, "PingFang SC", sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .center-unselected::before {
+      content: "";
+      position: absolute;
+      left: 9px;
+      top: 12px;
+      width: 94px;
+      height: 100px;
+      border: 2px solid #eaeaea;
+      border-radius: 15px;
+      background: #fff;
+    }
+
+    .center-unselected__content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .center-unselected__eyes {
+      display: block;
+      width: 52px;
+      height: 22px;
+      margin-bottom: 6px;
+    }
+
+    .choices.is-left-selected .selected-left,
+    .choices.is-left-selected .center-unselected,
+    .choices.is-right-selected .center-unselected {
+      opacity: 1;
+    }
+
+    .choices.is-right-selected .right-selected {
+      opacity: 1;
+    }
+
+    .submit-hit {
+      position: absolute;
+      left: 29px;
+      top: 726px;
+      z-index: 4;
+      width: 318px;
+      height: 56px;
+      padding: 0;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .submit-hit:focus-visible {
+      outline: 3px solid #1677ff;
+      outline-offset: 3px;
+    }
+
+    .screen.is-next .carousel,
+    .screen.is-next .choices,
+    .screen.is-next .submit-hit {
+      display: none;
+    }
+
+    .back-hit {
+      position: absolute;
+      left: 0;
+      top: 24px;
+      z-index: 5;
+      display: none;
+      width: 58px;
+      height: 58px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .screen.is-next .back-hit { display: block; }
+
+    .screen.is-next {
+      aspect-ratio: 1080 / 2221;
+    }
+
+    .back-hit:focus-visible {
+      outline: 3px solid #1677ff;
+      outline-offset: -5px;
+    }
+
+    .retry-hit {
+      position: absolute;
+      left: 18px;
+      bottom: 65px;
+      z-index: 5;
+      display: none;
+      width: 112px;
+      height: 56px;
+      padding: 0;
+      border: 0;
+      border-radius: 18px;
+      background: transparent;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .screen.is-next .retry-hit { display: block; }
+
+    .retry-hit:focus-visible {
+      outline: 3px solid #1677ff;
+      outline-offset: 2px;
+    }
+
+    .share-hit {
+      position: absolute;
+      right: 18px;
+      bottom: 65px;
+      z-index: 5;
+      display: none;
+      width: 218px;
+      height: 56px;
+      padding: 0;
+      border: 0;
+      border-radius: 18px;
+      background: transparent;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .screen.is-next .share-hit { display: block; }
+
+    .share-hit:focus-visible {
+      outline: 3px solid #1677ff;
+      outline-offset: 2px;
+    }
+
+    .screen.is-share {
+      aspect-ratio: 1080 / 2341;
+    }
+
+    .screen.is-retry {
+      aspect-ratio: 1080 / 2341;
+    }
+
+    .screen.is-share .back-hit,
+    .screen.is-share .retry-hit,
+    .screen.is-share .share-hit,
+    .screen.is-retry .back-hit,
+    .screen.is-retry .retry-hit,
+    .screen.is-retry .share-hit {
+      display: none;
+    }
+
+    .retry-left-hit {
+      position: absolute;
+      left: 18px;
+      top: 432px;
+      z-index: 6;
+      display: none;
+      width: 108px;
+      height: 132px;
+      padding: 0;
+      border: 0;
+      border-radius: 18px;
+      background: transparent;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .screen.is-retry .retry-left-hit { display: block; }
+
+    .retry-left-hit:focus-visible {
+      outline: 3px solid #1677ff;
+      outline-offset: 2px;
+    }
+
+    .retry-result-hit {
+      position: absolute;
+      left: 18px;
+      bottom: 42px;
+      z-index: 6;
+      display: none;
+      width: 343px;
+      height: 56px;
+      padding: 0;
+      border: 0;
+      border-radius: 18px;
+      background: transparent;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .screen.is-retry .retry-result-hit { display: block; }
+
+    .retry-result-hit:focus-visible {
+      outline: 3px solid #1677ff;
+      outline-offset: 2px;
+    }
+
+    @media (min-width: 376px) {
+      body { padding: 24px; }
+
+      .screen {
+        box-shadow: 0 16px 50px rgb(0 0 0 / 12%);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="screen">
+    <img class="artwork" src="./frame-14.svg" width="375" height="812" alt="Frame 14 页面">
+    <div class="carousel" aria-hidden="true">
+      <div class="row row--top">
+        <div class="track">
+          <div class="slice"><img src="./frame-14.svg" alt=""></div>
+          <div class="slice"><img src="./frame-14.svg" alt=""></div>
         </div>
-
-        <div class="food-row food-row-bottom" aria-hidden="true">
-          <div class="food-tile">
-            <img class="food-img cupcake" src="./assets/figma-frame-12/cupcake.png" alt="" />
-          </div>
-          <div class="food-tile">
-            <img class="food-img chick" src="./assets/figma-frame-12/chick.png" alt="" />
-          </div>
-          <div class="food-tile">
-            <img class="food-img blueberry" src="./assets/figma-frame-12/blueberry.png" alt="" />
-          </div>
-          <div class="food-tile"></div>
+      </div>
+      <div class="row row--bottom">
+        <div class="track">
+          <div class="slice"><img src="./frame-14.svg" alt=""></div>
+          <div class="slice"><img src="./frame-14.svg" alt=""></div>
         </div>
+      </div>
+    </div>
+    <div class="choices" id="choices">
+      <img class="selected-left" src="./group-10.svg" width="113" height="123" alt="">
+      <div class="right-selected" aria-hidden="true"><img src="./right-selected.svg" alt=""></div>
+      <div class="center-unselected" aria-hidden="true">
+        <div class="center-unselected__content">
+          <svg class="center-unselected__eyes" viewBox="163 603 51 22" aria-hidden="true">
+            <path d="M168.182 608.95C173.233 610.505 178.674 609.727 182.172 605.841C183.337 604.676 185.28 605.453 185.669 607.007C186.058 608.95 184.115 611.282 181.006 612.836C182.172 614.779 182.172 617.111 181.006 619.443C179.063 623.329 173.233 623.718 170.513 620.609C168.57 618.277 168.959 615.168 170.513 613.225C168.57 613.225 166.627 612.836 165.461 612.059C163.518 610.505 165.073 607.784 168.182 608.95Z" fill="#050505"/>
+            <path d="M194.217 605.841C198.104 609.727 203.544 610.505 208.596 608.95C211.705 607.784 213.259 610.505 211.316 612.059C210.151 612.836 208.208 613.225 206.264 613.225C207.819 615.168 208.208 618.277 206.264 620.609C203.544 623.718 197.715 623.329 195.772 619.443C194.606 617.111 194.606 614.779 195.772 612.836C192.663 611.282 190.72 608.95 191.109 607.007C191.497 605.453 193.052 604.676 194.217 605.841Z" fill="#050505"/>
+          </svg>
+          正在<br>纠结
+        </div>
+      </div>
+      <button class="choice-hit choice-hit--left" type="button" aria-label="选择随便吃点" aria-pressed="false"></button>
+      <button class="choice-hit choice-hit--center" type="button" aria-label="选择正在纠结" aria-pressed="true"></button>
+      <button class="choice-hit choice-hit--right" type="button" aria-label="选择整点好的" aria-pressed="false"></button>
+    </div>
+    <button class="submit-hit" type="button" aria-label="帮我选，进入结果页面"></button>
+    <button class="back-hit" type="button" aria-label="返回首页"></button>
+    <button class="retry-hit" type="button" aria-label="重选并返回首页"></button>
+    <button class="share-hit" type="button" aria-label="打开分享页面"></button>
+    <button class="retry-left-hit" type="button" aria-label="重选随便吃点"></button>
+    <button class="retry-result-hit" type="button" aria-label="重新选择并查看结果"></button>
+  </main>
+  <script>
+    const screen = document.querySelector('.screen');
+    const artwork = document.querySelector('.artwork');
+    const choices = document.querySelector('#choices');
+    const leftChoice = document.querySelector('.choice-hit--left');
+    const centerChoice = document.querySelector('.choice-hit--center');
+    const rightChoice = document.querySelector('.choice-hit--right');
+    const submitChoice = document.querySelector('.submit-hit');
+    const backChoice = document.querySelector('.back-hit');
+    const retryChoice = document.querySelector('.retry-hit');
+    const shareChoice = document.querySelector('.share-hit');
+    const retryLeftChoice = document.querySelector('.retry-left-hit');
+    const retryResultChoice = document.querySelector('.retry-result-hit');
 
-        <section class="panel">
-          <div class="title-block">
-            <p>看你心情</p>
-            <p>今天想吃啥</p>
-            <img src="./assets/figma-frame-12/green-stroke.svg" alt="" />
-          </div>
+    function selectChoice(choice) {
+      const leftSelected = choice === 'left';
+      const rightSelected = choice === 'right';
+      choices.classList.toggle('is-left-selected', leftSelected);
+      choices.classList.toggle('is-right-selected', rightSelected);
+      leftChoice.setAttribute('aria-pressed', String(leftSelected));
+      centerChoice.setAttribute('aria-pressed', String(!leftSelected && !rightSelected));
+      rightChoice.setAttribute('aria-pressed', String(rightSelected));
+    }
 
-          <div class="choice-area" aria-label="选择吃饭心情">
-            <button class="choice-card" type="button">
-              <span>随便</span>
-              <span>吃点</span>
-            </button>
-            <button class="choice-card is-active" type="button">
-              <span>正在</span>
-              <span>纠结</span>
-            </button>
-            <button class="choice-card" type="button">
-              <span>整点</span>
-              <span>好的</span>
-            </button>
-          </div>
+    leftChoice.addEventListener('click', () => selectChoice('left'));
+    centerChoice.addEventListener('click', () => selectChoice('center'));
+    rightChoice.addEventListener('click', () => selectChoice('right'));
+    submitChoice.addEventListener('click', () => {
+      artwork.src = './result.svg';
+      artwork.alt = '选择结果页面';
+      screen.classList.add('is-next');
+      document.title = '选择结果';
+    });
+    function returnHome() {
+      artwork.src = './frame-14.svg';
+      artwork.alt = 'Frame 14 页面';
+      screen.classList.remove('is-next');
+      screen.classList.remove('is-share');
+      screen.classList.remove('is-retry');
+      document.title = 'Frame 14';
+    }
 
-          <button class="pick-button" id="pickButton" type="button">
-            <span class="chance-dot" id="chanceCount">9</span>
-            <span id="pickText">帮我选</span>
-          </button>
-        </section>
-      </section>
-    </main>
-
-    <script src="./app.js"></script>
-  </body>
+    backChoice.addEventListener('click', returnHome);
+    retryChoice.addEventListener('click', () => {
+      artwork.src = './retry.svg';
+      artwork.alt = '重选页面';
+      screen.classList.add('is-retry');
+      document.title = '重选';
+    });
+    shareChoice.addEventListener('click', () => {
+      artwork.src = './share.svg';
+      artwork.alt = '分享页面';
+      screen.classList.add('is-share');
+      document.title = '分享';
+    });
+    retryLeftChoice.addEventListener('click', () => {
+      returnHome();
+      selectChoice('left');
+    });
+    retryResultChoice.addEventListener('click', () => {
+      artwork.src = './result.svg';
+      artwork.alt = '选择结果页面';
+      screen.classList.remove('is-retry');
+      document.title = '选择结果';
+    });
+  </script>
+</body>
 </html>

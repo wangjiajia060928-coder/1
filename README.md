@@ -1,38 +1,23 @@
-# 今天吃什么 H5
+# EAT 页面
 
-这是一个不需要安装依赖的手机端 H5 小应用。直接打开 `index.html` 就能体验。
+这是可直接部署到 GitHub Pages 的静态网页文件。
 
-## 页面结构
+## 文件说明
 
-- `index.html`：页面内容和三页结构
-- `styles.css`：视觉样式，包含白底小程序风格、食物贴纸、结果卡片、历史列表
-- `app.js`：抽选逻辑、历史记录、本地保存、避免近期重复
+- `index.html`：网站入口
+- `frame-14.svg`：首页
+- `group-10.svg`：左侧选中状态
+- `right-selected.svg`：右侧选中状态
+- `result.svg`：结果页
+- `retry.svg`：重选页
+- `share.svg`：分享页
 
-## 已包含功能
+## GitHub Pages 部署
 
-- 首页：选择吃饭心情，点击“帮我选”
-- 结果页：展示抽中的食物、推荐文案、日期
-- 历史入口：结果页点击“历史记录”进入历史页
-- 历史页：展示每次抽选记录
-- 避免重复：近期抽中过的食物会先从候选池排除
-- 重置：历史页点击“清空”
-- 本地保存：历史记录保存在当前手机浏览器里
+1. 新建 GitHub 仓库。
+2. 将本目录内的全部文件上传至仓库根目录。
+3. 打开仓库的 `Settings` → `Pages`。
+4. 在 `Build and deployment` 中选择 `Deploy from a branch`。
+5. 选择 `main` 分支和根目录 `/ (root)`，点击保存。
 
-## 修改食物
-
-打开 `app.js`，找到 `DEFAULT_FOODS`：
-
-```js
-{ id: 1, name: "烤肉", category: "重点好的", line: "吃好点，是你对自己的基本尊重", color: "#f7b267", emoji: "🍖" }
-```
-
-可以改这些字段：
-
-- `name`：食物名称
-- `line`：结果页文案
-- `color`：食物圆盘颜色
-- `emoji`：食物图案
-
-## 上线方式
-
-把整个 `today-eat-app` 文件夹上传到任意静态网页托管平台即可，例如 Netlify、Vercel、Cloudflare Pages，或者学校/公司自己的静态服务器。
+部署完成后，GitHub 会显示网站访问地址。
